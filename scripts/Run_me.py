@@ -2,17 +2,47 @@
 #
 # What: Run_me.py
 #
-# How : This is the main python file where you run the best periods functions . 
-#       No downsampling for this, but it will give you best n number of periods 
+# Pair: Give_me_n_best_periods_Function.py
 # 
 # Date : Mar 14, 2016
 ##########################################################################################
 
-from gatspy import periodic
+'''
+Utilises a function to generate light curves and give you 'n' best periods.
+This file will NOT down-sample for you
 
-# This Function returns will give you a light curve with the n best periods
+
+Parameters
+----------
+    
+i : <type 'int'>
+    The index number of light curve you want to examine
+    	
+model : <class 'gatspy.periodic.lomb_scargle_multiband.LombScargleMultiband'>
+    The Lomb Scargle fit model you want
+    	
+n : <type 'int'>
+    How many best fit periods you want 
+    
+Returns
+-------
+returned_list : <type 'list'> 
+    This list will contains the following items: 
+    
+returned_list[0] : nobs : <type 'int'>
+    The Number of Observations/Nights
+    	
+returned_list[1] : tze_periods : <type 'numpy.ndarray'> of <type 'numpy.float32'>
+    	A numpy array of the 'n' best periods 
+    			
+returned_list[2] : metadata['P'] : <type 'numpy.float32'>	
+    The system's best average period ie Vandplas periods
+
+'''
+
+# Project
 import Give_me_n_best_periods_Function as Give_Func
-print("The file runs")
+from gatspy import periodic
 
 # This is my fitting parameters :
 nterms_base=2
@@ -32,9 +62,7 @@ n = 6
 # Let's run it !
 def main():
 	for i in list_of_index:
-	# It returns this : No. of observations, 'n' number of periods, and the system's best ave
+	# Returns No. of observations, 'n' number of periods, and the system's best ave
 		l_curves = Give_Func.give_me_n_best_periods(i,model,n)
-		print(l_curves)
-		print('The main loop works')
-    	
+		
 main()
