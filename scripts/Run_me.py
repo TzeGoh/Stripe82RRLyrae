@@ -135,9 +135,9 @@ def main():
 		# Gets all the information of the rr_lyrae
 		t,mag,dmag,metadata,nobs = rr_info(i)
 	
-	    # Returns 
+	        # Returns 
 		nobs,period_n,period_true = Give_Func.give_me_n_best_periods(i,model,n,t,mag,dmag,
-																metadata,nobs,threshold)
+		                                                           metadata,nobs,threshold)
 		
 		# The n best periods' power as <type 'numpy.ndarray'> of <type 'numpy.float64'>
 		power = model.score(period_n)
