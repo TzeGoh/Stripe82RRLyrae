@@ -9,7 +9,7 @@
 
 '''
 Utilises a function to generate light curves and give you 'n' best periods.
-This file will NOT down-sample for you
+This file will NOT down-sample for you.
 
 Fucntion
 --------
