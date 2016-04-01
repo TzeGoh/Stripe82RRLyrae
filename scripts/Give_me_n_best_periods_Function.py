@@ -10,7 +10,7 @@
 
 '''
 This will take in a model fit -- LombscargleMultibandFast or LombscargleMultiband 
-#		(you have to specify)+ index from 0 to 483 , and return for you n best periods
+of indices of stars that you provide, and return for you 'n' best periods
 
 '''
 
@@ -177,14 +177,14 @@ def Give_Me_Light_Curves_Down_Sampled(i,model,n,t,mag,dmag,metadata,d_array,thre
     	This list will contain many <type 'tuple'>  
     	Each tuple will contain : 
     
-    		returned_list[index][0] : snobs : <type 'int'>
+    		returned_list[i][0] : snobs : <type 'int'>
     			The Number of Observations/Nights that has been downsampled
     	
-    		returned_list[index][1] : tze_periods : <type 'numpy.ndarray'> of 
+    		returned_list[i][1] : tze_periods : <type 'numpy.ndarray'> of 
     																<type 'numpy.float32'>
     			A numpy array of the 'n' best periods 
     			
-    		returned_list[index][2] : metadata['P'] : <type 'numpy.float32'>	
+    		returned_list[i][2] : metadata['P'] : <type 'numpy.float32'>	
     			The system's best average period ie Vandplas periods
     
     '''
