@@ -11,10 +11,6 @@
 #
 ###################################################################################
 
-Stripe82RRLyrae:
-	Searching LSST-pipeline Stripe 82 photometry for RR Lyrae.
-	
-	
 Why : 
 	This read_me should tell you everything about how to find best_periods  
           for RR_Lyraes	
