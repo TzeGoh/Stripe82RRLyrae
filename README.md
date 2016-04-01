@@ -4,7 +4,11 @@
 #  
 #   For  : Run_me.py , Give_me_5_best_periods_Function.py
 #
-#   Date : Mar 14, 2016
+#   How : Stripe82RRLyrae:
+#			Searching LSST-pipeline Stripe 82 photometry for RR Lyrae.
+#
+#	Date : Mar 14, 2016
+#
 ###################################################################################
 
 Stripe82RRLyrae:
