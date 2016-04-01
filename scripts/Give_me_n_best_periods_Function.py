@@ -174,17 +174,18 @@ def Give_Me_Light_Curves_Down_Sampled(i,model,n,t,mag,dmag,metadata,d_array,thre
     Returns
     -------
     returned_list : <type 'list'> 
-    	This list will contain <type 'tuple'>  
+    	This list will contain many <type 'tuple'>  
     	Each tuple will contain : 
     
-    returned_list[index][0] : snobs : <type 'int'>
-    	The Number of Observations/Nights that has been downsampled
+    		returned_list[index][0] : snobs : <type 'int'>
+    			The Number of Observations/Nights that has been downsampled
     	
-    returned_list[index][1] : tze_periods : <type 'numpy.ndarray'> of <type 'numpy.float32'>
-    		A numpy array of the 'n' best periods 
+    		returned_list[index][1] : tze_periods : <type 'numpy.ndarray'> of 
+    																<type 'numpy.float32'>
+    			A numpy array of the 'n' best periods 
     			
-    returned_list[index][2] : metadata['P'] : <type 'numpy.float32'>	
-    	The system's best average period ie Vandplas periods
+    		returned_list[index][2] : metadata['P'] : <type 'numpy.float32'>	
+    			The system's best average period ie Vandplas periods
     
     '''
     			 

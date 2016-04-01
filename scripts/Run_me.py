@@ -9,11 +9,15 @@
 
 '''
 Utilises a function to generate light curves and give you 'n' best periods.
-This file will NOT down-sample for you
+	There are 2 main functions:
+		main_no 	===> gives you light curves with no down-sampling
+		main_yes 	===> gives you light curves with down-sampling
 
-Fucntion
+------------------------------------------------------------------------------------------
+
+Function
 --------
-main :  <type 'function'>
+main_no :  <type 'function'>
 	The main function will take the following parameters and give the following returns :
 
 Parameters
@@ -57,6 +61,58 @@ period_n : <type 'numpy.ndarray'> of <type 'numpy.float32'>
 period_true : metadata['P'] : <type 'numpy.float32'>	
     The system's best average period ie Vandplas periods
 
+------------------------------------------------------------------------------------------
+
+Function
+--------
+main_yes :  <type 'function'>
+	The main function will take the following parameters and give the following returns :
+
+Parameters
+----------
+i : <type 'int'>
+	The index number of light curve you want to examine
+	
+model : <class 'gatspy.periodic.lomb_scargle_multiband.LombScargleMultiband'>
+	The Lomb Scargle fit model you want
+	
+n : <type 'int'>
+	How many best fit periods you want 
+
+t: <type 'numpy.ndarray'>
+	The time/period of each of the light curve of each RR_Lyrae
+
+mag: <type 'numpy.ndarray'>
+	The magnitude of each of the light curve of each RR_Lyrae
+
+dmag: <type 'numpy.ndarray'>
+	The error in magnitude of each of the light curve of each RR_Lyrae
+
+metadata: <type 'numpy.void'>
+	All the information of each RR_Lyrae. Most important is metadata['P'] = Period
+
+d_array : <type 'numpy.ndarray'> of <type 'int'>	
+	A numpy array of numbers of the powers of base 2...up to and including nobs 
+		
+threshold: <type 'int'>
+	A minimum threshold so that the periods we pick are not too close 
+
+Returns
+-------
+l_curves : <type 'list'> containing many <type 'tuple'>  
+	A list of sequentially down-sampled info of each each star.	
+	Each tuple will contain :
+    
+		snobs : <type 'int'>
+    		The Number of Observations/Nights that's been down-sampled, in a number of the 
+    			power of base 2...up to and including nobs
+    	
+		period_n : <type 'numpy.ndarray'> of <type 'numpy.float32'>
+   		 	A numpy array of the 'n' best periods 
+    			
+		period_true : metadata['P'] : <type 'numpy.float32'>	
+   		 	The system's best average period ie Vandplas periods
+    
 '''
 
 # Project
@@ -128,8 +184,14 @@ threshold = 5E-3
 # This other threshold refers to the min threshold for power 
 threshold_pow = 0.1398
 
-# Let's run it !
-def main():
+# Do you want your light_curves down-sampled ?
+choice = 'Yes' 		# Down-sample it !!
+##choice = 'No' 	# Do not down-sample it !!
+
+# Defining 'No' choice
+def main_no():
+
+	# This is NOT down-sampled
 	for i in list_of_index:
 		
 		# Gets all the information of the rr_lyrae
@@ -141,7 +203,7 @@ def main():
 		
 		# The n best periods' power as <type 'numpy.ndarray'> of <type 'numpy.float64'>
 		power = model.score(period_n)
-		print(power)
+		print('power:',power)
 		
 		# Comparing power with the threshold
 		for j,significance in enumerate(power):
@@ -150,10 +212,44 @@ def main():
 					print('fit template')
 					print('signififnace',significance)
 					print('period',period_n[j])
-		
-	
-main()
+								
+# Defining you 'Yes' choice
+def main_yes():
 
+	# This IS down-sampled
+	for i in list_of_index:
+		
+		# Gets all the information of the rr_lyrae
+		t,mag,dmag,metadata,nobs = rr_info(i)
+		
+		# The Down sampled array
+		d_array = Give_Func.Give_Me_Down_Sample(nobs)
+		
+	    # Returns
+		l_curves = Give_Func.Give_Me_Light_Curves_Down_Sampled(i,model,n,t,mag,dmag,
+															   metadata,d_array,threshold)
+		
+		# Individual items in l_curves contains snobs, period_n + period_true
+		for items in l_curves:
+			snobs,period_n,period_true = items
+			
+			# n best periods' power as <type 'numpy.ndarray'> of <type 'numpy.float64'>
+			power = model.score(period_n)
+			print('power:',power)
+		
+			# Comparing power with the threshold
+			for j,significance in enumerate(power):
+				if significance > threshold_pow:
+					if period_n[j] < 1 :
+						print('fit template')
+						print('signififnace',significance)
+						print('period',period_n[j])
+
+# It will run for you the program, depending whether you want it down-sampled or not.			
+if choice =='Yes':
+	main_yes()		# Down-sample it !!
+else:
+	main_no()		# Do not down-sample it !!
 
 	
 	
