@@ -22,23 +22,40 @@ from gatspy import periodic
 from gatspy.periodic import LombScargleMultiband
 import astroML
 import random
-from gatspy.datasets import fetch_rrlyrae
 
-def give_me_n_best_periods(i,model,n):
+
+def give_me_n_best_periods(i,model,n,t,mag,dmag,metadata,nobs,threshold):
     '''
     This gives you n best periods but does NOT downsample for you
     
     Parameters
     ----------
-    
-    i : <type 'int'>
-    	The index number of light curve you want to examine
-    	
-    model : <class 'gatspy.periodic.lomb_scargle_multiband.LombScargleMultiband'>
-    	The Lomb Scargle fit model you want
-    	
-    n : <type 'int'>
-    	How many best fit periods you want 
+	i : <type 'int'>
+		The index number of light curve you want to examine
+		
+	model : <class 'gatspy.periodic.lomb_scargle_multiband.LombScargleMultiband'>
+		The Lomb Scargle fit model you want
+		
+	n : <type 'int'>
+		How many best fit periods you want 
+
+	t: <type 'numpy.ndarray'>
+		The time/period of each of the light curve of each RR_Lyrae
+
+	mag: <type 'numpy.ndarray'>
+		The magnitude of each of the light curve of each RR_Lyrae
+
+	dmag: <type 'numpy.ndarray'>
+		The error in magnitude of each of the light curve of each RR_Lyrae
+
+	metadata: <type 'numpy.void'>
+		All the information of each RR_Lyrae. Most important is metadata['P'] = Period
+		
+	nobs: <type 'int'>
+		The number of observations 
+		
+	threshold: <type 'int'>
+		A minimum threshold so that the periods we pick are not too close 
     
     Returns
     -------
@@ -56,15 +73,6 @@ def give_me_n_best_periods(i,model,n):
     			
     '''
     
-    # It's finding the rr_lyraes by index + fit that you specify
-    rrlyrae = fetch_rrlyrae()
-    lcid = rrlyrae.ids[i]
-    t, mag, dmag, filts = rrlyrae.get_lightcurve(lcid)
-    metadata = rrlyrae.get_metadata(lcid)
-    
-    # Number of observations - original size
-    nobs = t.size
-    
     # Number of Observations + down-sampled n best periods to be returned
     returned_list=[]
     
@@ -80,9 +88,6 @@ def give_me_n_best_periods(i,model,n):
     scores = model.score(periods)
     idx = np.argsort(scores)
     tze_periods = np.array([])
-    
-    # The Miniminum threshold so that we don't pick up periods too close to one another
-    threshold = 5E-3
     
     # Let's pick up those periods
     for period in periods[idx][::-1]:
@@ -102,40 +107,6 @@ def give_me_n_best_periods(i,model,n):
 
     return returned_list
     
-def give_me_nobs(i,model,n):
-    '''
-    This gives you the number of observations
-    
-    Parameters
-    ----------
-    
-    i : <type 'int'>
-    	The index number of light curve you want to examine
-    	
-    model : <class 'gatspy.periodic.lomb_scargle_multiband.LombScargleMultiband'>
-    	The Lomb Scargle fit model you want
-    	
-    n : <type 'int'>
-    	How many best fit periods you want 
-    
-    Returns
-    -------
-    nobs : <type 'int'>
-    	The Number of Observations/Nights
-    
-    '''
-	
-    # It's finding the rr_lyraes by index and feeding it with information
-    rrlyrae = fetch_rrlyrae()
-    lcid = rrlyrae.ids[i]
-    t, mag, dmag, filts = rrlyrae.get_lightcurve(lcid)
-    
-    # Number of observations - original size
-    nobs = t.size
-    
-    
-    return nobs
-
 
 def Give_Me_Down_Sample(nobs):
     '''
@@ -164,25 +135,41 @@ def Give_Me_Down_Sample(nobs):
     return down_sample_array
   
              
-def Give_Me_Light_Curves_Down_Sampled(i,nobs,model,n,d_array):
+def Give_Me_Light_Curves_Down_Sampled(i,model,n,t,mag,dmag,metadata,d_array,threshold):
     '''
     This gives you n best periods AND it would have downsample it for you
    
     Parameters
     ----------
-    
-    i : <type 'int'>
-    	The index number of light curve you want to examine
-    	
-    model : <class 'gatspy.periodic.lomb_scargle_multiband.LombScargleMultiband'>
-    	The Lomb Scargle fit model you want
-    	
-    n : <type 'int'>
-    	How many best fit periods you want 
+	i : <type 'int'>
+		The index number of light curve you want to examine
+		
+	model : <class 'gatspy.periodic.lomb_scargle_multiband.LombScargleMultiband'>
+		The Lomb Scargle fit model you want
+		
+	n : <type 'int'>
+		How many best fit periods you want 
+
+	t: <type 'numpy.ndarray'>
+		The time/period of each of the light curve of each RR_Lyrae
+
+	mag: <type 'numpy.ndarray'>
+		The magnitude of each of the light curve of each RR_Lyrae
+
+	dmag: <type 'numpy.ndarray'>
+		The error in magnitude of each of the light curve of each RR_Lyrae
+
+	nobs: <type 'int'>
+		The number of observations
+
+	metadata: <type 'numpy.void'>
+		All the information of each RR_Lyrae. Most important is metadata['P'] = Period
     
     d_array : <type 'numpy.ndarray'> of <type 'int'>	
     	A numpy array of numbers of the powers of base 2...up to and including nobs 
-    
+    	
+    threshold: <type 'int'>
+		A minimum threshold so that the periods we pick are not too close 
     
     Returns
     -------
@@ -203,13 +190,7 @@ def Give_Me_Light_Curves_Down_Sampled(i,nobs,model,n,d_array):
     			 
     # Number of Observations + down-sampled n best periods to be returned
     returned_list=[]
-    
-    # It's finding the rr_lyraes by index and feeding it information
-    rrlyrae = fetch_rrlyrae()
-    lcid = rrlyrae.ids[i]
-    t, mag, dmag, filts = rrlyrae.get_lightcurve(lcid)
-    metadata = rrlyrae.get_metadata(lcid)
-    
+   
     # Down-sampling the data !!
     for items in d_array:
         
@@ -248,9 +229,6 @@ def Give_Me_Light_Curves_Down_Sampled(i,nobs,model,n,d_array):
         scores = model.score(periods)
         idx = np.argsort(scores)
         tze_periods = np.array([])
-        
-        # The Miniminum threshold so that we don't pick up periods too close to one another
-        threshold = 5E-3
         
         # Let's pick up those periods
         for period in periods[idx][::-1]:
